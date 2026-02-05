@@ -10,7 +10,7 @@ async function connectToDatabase() {
     return cachedDb;
   }
   
-  const db = await mongoose.connect('mongodb+srv://ektadodiya01_db_user:Ekta%402612@innovate.zqj90eb.mongodb.net/');
+  const db = await mongoose.connect('mongodb+srv://hastikalariya03_db_user:74VN8uvxprCSh9u5@cluster0.1efupi3.mongodb.net/');
   cachedDb = db;
   return db;
 }
@@ -104,9 +104,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
             const ipDistance = haversine(ipData.lat, ipData.lon, latitude, longitude);
             console.log('IP Distance:', ipDistance, 'km');
-            if (ipDistance > 200) {
-              return res.status(400).json({ error: 'IP and GPS mismatch' });
-            }
+            // Removed IP/GPS mismatch check to allow requests
+            // if (ipDistance > 200) {
+            //   return res.status(400).json({ error: 'IP and GPS mismatch' });
+            // }
           }
         }
       } catch (ipError: any) {
