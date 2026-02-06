@@ -18,7 +18,8 @@ body {
   background: #f8f9fa;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
 }
 
 .app-container {
@@ -102,14 +103,16 @@ body {
 .input-field {
   width: 100%;
   padding: 16px;
-  font-size: 16px; /* Prevents zoom on iOS */
+  font-size: 16px;
+  /* Prevents zoom on iOS */
   border-radius: 8px;
   border: 2px solid #e9ecef;
   margin-bottom: 16px;
   box-sizing: border-box;
   transition: all 0.2s ease;
   background: white;
-  -webkit-appearance: none; /* Remove iOS styling */
+  -webkit-appearance: none;
+  /* Remove iOS styling */
   appearance: none;
 }
 
@@ -131,9 +134,12 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent; /* Remove iOS tap highlight */
-  touch-action: manipulation; /* Improve touch response */
-  min-height: 48px; /* Minimum touch target size */
+  -webkit-tap-highlight-color: transparent;
+  /* Remove iOS tap highlight */
+  touch-action: manipulation;
+  /* Improve touch response */
+  min-height: 48px;
+  /* Minimum touch target size */
 }
 
 .submit-button:active:not(:disabled) {
@@ -165,7 +171,8 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 16px;
-  min-height: 48px; /* Minimum touch target */
+  min-height: 48px;
+  /* Minimum touch target */
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -214,7 +221,8 @@ body {
   color: #007bff;
   letter-spacing: 2px;
   font-family: 'Courier New', monospace;
-  word-break: break-all; /* Ensures code breaks on mobile */
+  word-break: break-all;
+  /* Ensures code breaks on mobile */
   line-height: 1.2;
 }
 
@@ -236,12 +244,13 @@ body {
 
 .qr-code-image {
   max-width: 200px;
-  width: 80vw; /* Responsive width */
+  width: 80vw;
+  /* Responsive width */
   max-width: 200px;
   height: auto;
   border: 2px solid #007bff;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
 
@@ -268,6 +277,7 @@ body {
     opacity: 0;
     transform: translateY(50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -275,9 +285,12 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
   }
+
   50% {
     box-shadow: 0 0 30px rgba(0, 123, 255, 0.5);
   }
@@ -288,10 +301,12 @@ body {
     opacity: 0;
     transform: scale(0.3);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.1);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -302,6 +317,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -314,26 +330,26 @@ body {
   .app-container {
     padding: 12px;
   }
-  
+
   .app-title {
     font-size: 1.6rem;
   }
-  
+
   .card {
     padding: 16px 12px;
     margin: 12px 0;
   }
-  
+
   .donor-id-code {
     font-size: 1.4rem;
     letter-spacing: 1px;
   }
-  
+
   .qr-code-image {
     max-width: 160px;
     width: 70vw;
   }
-  
+
   .input-field {
     padding: 14px;
   }
@@ -344,11 +360,11 @@ body {
   .app-title {
     font-size: 1.9rem;
   }
-  
+
   .donor-id-code {
     font-size: 1.7rem;
   }
-  
+
   .qr-code-image {
     max-width: 180px;
     width: 75vw;
@@ -362,15 +378,15 @@ body {
     margin: 0 auto;
     padding: 20px;
   }
-  
+
   .card {
     padding: 24px 20px;
   }
-  
+
   .form-title {
     font-size: 1.5rem;
   }
-  
+
   .qr-title {
     font-size: 1.7rem;
   }
