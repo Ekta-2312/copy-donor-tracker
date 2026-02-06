@@ -7,21 +7,50 @@ const API_BASE_URL = 'https://copy-innovate.onrender.com';
 // Function to generate and download donor card PNG
 const generateAndDownloadDonorCard = async (qrData: any, donorId: string, mobileNumber: string) => {
   try {
-    const qrText = `DONOR_ID: ${donorId}\nMobile: ${mobileNumber}\nRequest: ${qrData.requestId}`;
-    const qrCodeDataURL = await QRCode.toDataURL(qrText, { width: 200, margin: 2 });
+    const qrText = `DONOR_ID: ${donorId}\nMobile: ${mobileNumber}\nRequest: ${qrData.requestId || qrData.requestId}`;
+    const qrCodeDataURL = await QRCode.toDataURL(qrText, { width: 220, margin: 2 });
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    canvas.width = 400; canvas.height = 500;
+
+    canvas.width = 450; canvas.height = 650;
+
+    // Background
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#007bff'; ctx.lineWidth = 10; ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
-    ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center';
-    ctx.fillText('DONOR RESPONSE CARD', canvas.width / 2, 60);
-    ctx.fillStyle = '#007bff'; ctx.font = 'bold 32px Arial'; ctx.fillText(donorId, canvas.width / 2, 120);
-    ctx.fillStyle = '#2c3e50'; ctx.font = '18px Arial'; ctx.fillText(`Mobile: ${mobileNumber}`, canvas.width / 2, 160);
+
+    // Border
+    ctx.strokeStyle = '#007bff'; ctx.lineWidth = 15; ctx.strokeRect(7, 7, canvas.width - 14, canvas.height - 14);
+
+    // Header
+    ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 28px Arial'; ctx.textAlign = 'center';
+    ctx.fillText('BLOOD REQUEST RESPONSE', canvas.width / 2, 80);
+
+    // Donor ID Section
+    ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 22px Arial';
+    ctx.fillText('DONOR ID', canvas.width / 2, 130);
+    ctx.fillStyle = '#007bff'; ctx.font = 'bold 38px Arial';
+    ctx.fillText(donorId, canvas.width / 2, 180);
+
+    // Details
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#2c3e50'; ctx.font = '20px Arial';
+    ctx.fillText(`Mobile:  ${mobileNumber}`, 50, 240);
+    ctx.fillText(`Request ID:  ${qrData.requestId || 'N/A'}`, 50, 290);
+
+    // QR Code Label
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#007bff'; ctx.font = 'bold 24px Arial';
+    ctx.fillText('SCAN QR CODE', canvas.width / 2, 360);
+
     const qrImage = new Image();
     qrImage.onload = () => {
-      ctx.drawImage(qrImage, (canvas.width - 200) / 2, 200, 200, 200);
+      // Draw QR Code frame
+      ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2;
+      ctx.strokeRect((canvas.width - 240) / 2, 380, 240, 240);
+
+      // Draw QR Code
+      ctx.drawImage(qrImage, (canvas.width - 220) / 2, 390, 220, 220);
+
       const link = document.createElement('a');
       link.download = `donor-card-${donorId}.png`;
       link.href = canvas.toDataURL('image/png');
