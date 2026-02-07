@@ -194,8 +194,16 @@ function App() {
   };
 
   const saveCurrentLocation = async () => {
-    if (!currentCoords || !mobileNumber.trim()) {
-      setResult('❌ Please enter your mobile number.');
+    if (!currentCoords) {
+      setResult('❌ Location not captured yet. Please wait or refresh.');
+      return;
+    }
+
+    const cleaned = mobileNumber.trim().replace(/\D/g, ''); // Extract only digits
+    const isTenDigits = cleaned.length === 10;
+
+    if (!isTenDigits) {
+      setResult('❌ Please enter a valid 10-digit mobile number.');
       return;
     }
 
@@ -314,9 +322,10 @@ function App() {
             <input
               className="input-field"
               type="tel"
-              placeholder="Enter Mobile Number"
+              maxLength={10}
+              placeholder="Enter 10-Digit Mobile Number"
               value={mobileNumber}
-              onChange={e => setMobileNumber(e.target.value)}
+              onChange={e => setMobileNumber(e.target.value.replace(/\D/g, ''))}
             />
             <button
               className="submit-button"

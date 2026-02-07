@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📍 Donor Location Tracker</title>
+    <title> Donor Location Tracker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -87,20 +87,21 @@
 
 <body>
     <div class="container">
-        <h1>📍 Donor Location Tracker</h1>
+        <h1></h1> Donor Location Tracker</h1>
 
         <div id="status" class="status loading">
-            🔍 Detecting your location...
+            Detecting your location...
         </div>
 
         <div id="form" style="display: none;">
             <div class="form-group">
-                <label for="mobileNumber">📱 Mobile Number:</label>
-                <input type="tel" id="mobileNumber" placeholder="Enter your mobile number">
+                <label for="mobileNumber">Mobile Number:</label>
+                <input type="tel" id="mobileNumber" maxlength="10" placeholder="Enter 10-digit mobile number"
+                    oninput="this.value = this.value.replace(/\D/g, '')">
             </div>
 
             <button id="submitBtn" onclick="submitLocation()">
-                💾 Submit My Location
+                Submit My Location
             </button>
         </div>
     </div>
@@ -115,7 +116,7 @@
 
         function getCurrentLocation() {
             if (!navigator.geolocation) {
-                showStatus('❌ Geolocation not supported by this browser.', 'error');
+                showStatus('Geolocation not supported by this browser.', 'error');
                 return;
             }
 
@@ -131,7 +132,7 @@
                         showLocationSuccess();
                     } else {
                         // Try to get better accuracy
-                        showStatus('📍 Improving location accuracy...', 'loading');
+                        showStatus('Improving location accuracy...', 'loading');
 
                         const watchId = navigator.geolocation.watchPosition(
                             pos => {
@@ -160,16 +161,16 @@
                     let message;
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
-                            message = '❌ Location access denied. Please enable location services and refresh.';
+                            message = 'Location access denied. Please enable location services and refresh.';
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            message = '❌ Location information unavailable.';
+                            message = 'Location information unavailable.';
                             break;
                         case error.TIMEOUT:
-                            message = '❌ Location request timed out.';
+                            message = 'Location request timed out.';
                             break;
                         default:
-                            message = '❌ An unknown error occurred.';
+                            message = 'An unknown error occurred.';
                             break;
                     }
                     showStatus(message, 'error');
@@ -214,21 +215,22 @@
         }
 
         async function submitLocation() {
-            const mobileNumber = document.getElementById('mobileNumber').value.trim();
+            const mobileInput = document.getElementById('mobileNumber').value.trim();
+            const cleaned = mobileInput.replace(/\D/g, '');
 
-            if (!mobileNumber) {
-                alert('❌ Please enter your mobile number.');
+            if (cleaned.length !== 10) {
+                alert('Please enter a valid 10-digit mobile number.');
                 return;
             }
 
             if (!currentCoords) {
-                alert('❌ Location not available. Please refresh and try again.');
+                alert('Location not available. Please refresh and try again.');
                 return;
             }
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.textContent = '💾 Saving...';
+            submitBtn.textContent = 'Saving...';
 
             // Format mobile number with country code
             const formattedMobile = formatMobileNumber(mobileNumber);
@@ -258,14 +260,14 @@
                     currentCoords = null;
                     document.getElementById('form').style.display = 'none';
                 } else {
-                    showStatus(`❌ Error: ${data.error}`, 'error');
+                    showStatus(`Error: ${data.error}`, 'error');
                 }
             } catch (error) {
-                showStatus('❌ Network error. Please try again.', 'error');
+                showStatus('Network error. Please try again.', 'error');
             }
 
             submitBtn.disabled = false;
-            submitBtn.textContent = '💾 Submit My Location';
+            submitBtn.textContent = 'Submit My Location';
         }
     </script>
 </body>
