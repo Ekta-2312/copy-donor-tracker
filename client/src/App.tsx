@@ -68,6 +68,8 @@ function App() {
   const [requestStatus, setRequestStatus] = useState<any>(null);
   const [isValidating, setIsValidating] = useState(true);
 
+  const [showAccuracyModal, setShowAccuracyModal] = useState(false);
+
   // Extract requestId and token from URL (Path or Query)
   const urlPath = window.location.pathname;
   const pathParts = urlPath.split('/').filter(Boolean);
@@ -99,7 +101,7 @@ function App() {
         setRequestStatus(data);
       } catch (err) {
         console.error('Validation error:', err);
-        setResult('❌ Error validating request. Please try again later.');
+        setResult('Error validating request. Please try again later.');
       } finally {
         setIsValidating(false);
       }
@@ -110,22 +112,23 @@ function App() {
     }
   }, [rawId]);
 
-  // Auto-fetch location when component mounts
+  // Show accuracy modal when component mounts if request is active
   useEffect(() => {
     if (requestStatus?.status === 'active') {
-      getCurrentLocation();
+      setShowAccuracyModal(true);
     }
   }, [requestStatus]);
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      setResult("❌ Geolocation not supported.");
+      setResult("Geolocation not supported.");
       setLocationStatus('error');
       return;
     }
 
-    setResult("📍 Getting your location...");
+    setResult("Getting your location...");
     setLocationStatus('getting');
+    setShowAccuracyModal(false); // Hide modal when starting
 
     navigator.geolocation.getCurrentPosition(
       pos => {
@@ -139,11 +142,11 @@ function App() {
           setCurrentCoords(coords);
           setLocationStatus('success');
           setResult(`
-            <p>✅ Location captured successfully!</p>
+            <p>Location captured successfully!</p>
             <p>Accuracy: ±${coords.acc.toFixed(2)} meters</p>
           `);
         } else {
-          setResult("📍 Improving location accuracy...");
+          setResult("Improving location accuracy...");
           const watchId = navigator.geolocation.watchPosition(
             pos2 => {
               const coords2 = {
@@ -156,7 +159,7 @@ function App() {
               setCurrentCoords(bestCoords);
               setLocationStatus('success');
               setResult(`
-                <p>✅ Location captured successfully!</p>
+                <p>Location captured successfully!</p>
                 <p>Accuracy: ±${bestCoords.acc.toFixed(2)} meters</p>
               `);
             },
@@ -165,7 +168,7 @@ function App() {
               setCurrentCoords(coords);
               setLocationStatus('success');
               setResult(`
-                <p>✅ Location captured!</p>
+                <p>Location captured!</p>
               `);
             },
             { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
@@ -175,10 +178,10 @@ function App() {
       err => {
         if (err.code === err.PERMISSION_DENIED) {
           setLocationStatus('denied');
-          setResult(`❌ Location access denied. Please enable location services and refresh the page.`);
+          setResult(`Location access denied. Please enable location services and refresh the page.`);
         } else {
           setLocationStatus('error');
-          setResult(`❌ Error getting location: ${err.message}`);
+          setResult(`Error getting location: ${err.message}`);
         }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
@@ -195,7 +198,7 @@ function App() {
 
   const saveCurrentLocation = async () => {
     if (!currentCoords) {
-      setResult('❌ Location not captured yet. Please wait or refresh.');
+      setResult('Location not captured yet. Please wait or refresh.');
       return;
     }
 
@@ -203,11 +206,11 @@ function App() {
     const isTenDigits = cleaned.length === 10;
 
     if (!isTenDigits) {
-      setResult('❌ Please enter a valid 10-digit mobile number.');
+      setResult('Please enter a valid 10-digit mobile number.');
       return;
     }
 
-    setResult("💾 Submitting your response...");
+    setResult("Submitting your response...");
 
     const formattedMobile = formatMobileNumber(mobileNumber);
 
@@ -231,20 +234,20 @@ function App() {
 
       if (data.status === 'closed') {
         setRequestStatus(data);
-        setResult(`❌ ${data.message}`);
+        setResult(data.message);
         return;
       }
 
       if (data.error) {
-        setResult(`❌ ${data.error}`);
+        setResult(data.error);
       } else {
         const qrData = data.qrData || { requestId: requestStatus?.data?.requestId || rawId, token: finalToken };
         await generateAndDownloadDonorCard(qrData, data.donorId, formattedMobile);
 
         setResult(`
-          <p>✅ Response submitted successfully!</p>
+          <p>Response submitted successfully!</p>
           <p><strong>Donor ID:</strong> ${data.donorId}</p>
-          <p>📥 Your donor card has been downloaded.</p>
+          <p>Your donor card has been downloaded.</p>
         `);
 
         // Redirect to Google Maps
@@ -257,7 +260,7 @@ function App() {
         }, 3000);
       }
     } catch (err: any) {
-      setResult(`❌ Error: ${err.message}`);
+      setResult(`Error: ${err.message}`);
     }
   };
 
@@ -266,7 +269,7 @@ function App() {
       <div className="App">
         <div className="app-container">
           <div className="card">
-            <h3>🔍 Validating Blood Request...</h3>
+            <h3>Validating Blood Request...</h3>
             <p>Please wait a moment.</p>
           </div>
         </div>
@@ -278,9 +281,9 @@ function App() {
     return (
       <div className="App">
         <div className="app-container">
-          <h1 className="app-title">📍 Donor Tracker</h1>
+          <h1 className="app-title">Donor Tracker</h1>
           <div className="card status-denied">
-            <h2 style={{ color: '#dc3545' }}>⚠️ Request Closed</h2>
+            <h2 style={{ color: '#dc3545' }}>Request Closed</h2>
             <p>{requestStatus.message}</p>
             {requestStatus.data && (
               <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(0,0,0,0.05)', borderRadius: '8px' }}>
@@ -296,11 +299,11 @@ function App() {
   return (
     <div className="App">
       <div className="app-container">
-        <h1 className="app-title">📍 Donor Tracker</h1>
+        <h1 className="app-title">Donor Tracker</h1>
 
         {requestStatus?.data && (
           <div className="card blood-request-card">
-            <h3 className="blood-request-title">🩸 Active Blood Request</h3>
+            <h3 className="blood-request-title">Active Blood Request</h3>
             <div className="request-info-grid">
               <p>Requested Group: <span className="badge">{requestStatus.data.bloodGroup}</span></p>
               <p>Status: <span className="status-badge">Active</span></p>
@@ -310,15 +313,15 @@ function App() {
 
         {locationStatus === 'denied' && (
           <div className="card status-denied">
-            <h3>❌ Location Access Required</h3>
+            <h3>Location Access Required</h3>
             <p>Please enable location services to respond.</p>
-            <button className="refresh-button" onClick={() => window.location.reload()}>🔄 Retry</button>
+            <button className="refresh-button" onClick={() => window.location.reload()}>Retry</button>
           </div>
         )}
 
         {locationStatus === 'success' && (
           <div className="card form-card">
-            <h3 className="form-title">📱 Submit Your Location</h3>
+            <h3 className="form-title">Submit Your Location</h3>
             <input
               className="input-field"
               type="tel"
@@ -332,7 +335,7 @@ function App() {
               onClick={saveCurrentLocation}
               disabled={!mobileNumber.trim() || !!result.includes('submitted')}
             >
-              📍 Confirm & Submit
+              Confirm & Submit
             </button>
           </div>
         )}
@@ -340,6 +343,43 @@ function App() {
         {result && (
           <div className="card result-card">
             <div dangerouslySetInnerHTML={{ __html: result }} />
+          </div>
+        )}
+
+        {showAccuracyModal && (
+          <div className="modal-overlay">
+            <div className="accuracy-modal">
+              <div className="modal-content">
+                <h3 className="modal-title">To continue, your device will need to use Location Accuracy</h3>
+                <p className="modal-subtitle">The following settings should be on:</p>
+
+                <div className="modal-item">
+                  <div className="modal-icon blue">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                  </div>
+                  <div className="modal-text">Device location</div>
+                </div>
+
+                <div className="modal-item">
+                  <div className="modal-icon blue">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" /></svg>
+                  </div>
+                  <div className="modal-text">
+                    Location Accuracy, which provides more accurate location for apps and services.
+                    This helps us route you to the hospital correctly.
+                  </div>
+                </div>
+
+                <p className="modal-footer-text">
+                  You can change this at any time in location settings.
+                </p>
+
+                <div className="modal-actions">
+                  <button className="btn-no" onClick={() => setShowAccuracyModal(false)}>No, thanks</button>
+                  <button className="btn-turn-on" onClick={getCurrentLocation}>Turn on</button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

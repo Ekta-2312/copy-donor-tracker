@@ -87,7 +87,7 @@
 
 <body>
     <div class="container">
-        <h1></h1> Donor Location Tracker</h1>
+        <h1>Donor Location Tracker</h1>
 
         <div id="status" class="status loading">
             Detecting your location...
@@ -180,7 +180,7 @@
         }
 
         function showLocationSuccess() {
-            showStatus(`✅ Location captured! Accuracy: ±${currentCoords.acc.toFixed(2)}m`, 'success');
+            showStatus(`Location captured! Accuracy: ±${currentCoords.acc.toFixed(2)}m`, 'success');
             document.getElementById('form').style.display = 'block';
         }
 
@@ -254,7 +254,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showStatus('✅ Location saved successfully!', 'success');
+                    showStatus('Location saved successfully!', 'success');
                     // Clear form
                     document.getElementById('mobileNumber').value = '';
                     currentCoords = null;
