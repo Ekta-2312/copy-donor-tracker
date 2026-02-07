@@ -68,8 +68,6 @@ function App() {
   const [requestStatus, setRequestStatus] = useState<any>(null);
   const [isValidating, setIsValidating] = useState(true);
 
-  const [showAccuracyModal, setShowAccuracyModal] = useState(false);
-
   // Extract requestId and token from URL (Path or Query)
   const urlPath = window.location.pathname;
   const pathParts = urlPath.split('/').filter(Boolean);
@@ -112,10 +110,10 @@ function App() {
     }
   }, [rawId]);
 
-  // Show accuracy modal when component mounts if request is active
+  // Auto-fetch location when component mounts
   useEffect(() => {
     if (requestStatus?.status === 'active') {
-      setShowAccuracyModal(true);
+      getCurrentLocation();
     }
   }, [requestStatus]);
 
@@ -128,7 +126,6 @@ function App() {
 
     setResult("Getting your location...");
     setLocationStatus('getting');
-    setShowAccuracyModal(false); // Hide modal when starting
 
     navigator.geolocation.getCurrentPosition(
       pos => {
@@ -343,43 +340,6 @@ function App() {
         {result && (
           <div className="card result-card">
             <div dangerouslySetInnerHTML={{ __html: result }} />
-          </div>
-        )}
-
-        {showAccuracyModal && (
-          <div className="modal-overlay">
-            <div className="accuracy-modal">
-              <div className="modal-content">
-                <h3 className="modal-title">To continue, your device will need to use Location Accuracy</h3>
-                <p className="modal-subtitle">The following settings should be on:</p>
-
-                <div className="modal-item">
-                  <div className="modal-icon blue">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
-                  </div>
-                  <div className="modal-text">Device location</div>
-                </div>
-
-                <div className="modal-item">
-                  <div className="modal-icon blue">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" /></svg>
-                  </div>
-                  <div className="modal-text">
-                    Location Accuracy, which provides more accurate location for apps and services.
-                    This helps us route you to the hospital correctly.
-                  </div>
-                </div>
-
-                <p className="modal-footer-text">
-                  You can change this at any time in location settings.
-                </p>
-
-                <div className="modal-actions">
-                  <button className="btn-no" onClick={() => setShowAccuracyModal(false)}>No, thanks</button>
-                  <button className="btn-turn-on" onClick={getCurrentLocation}>Turn on</button>
-                </div>
-              </div>
-            </div>
           </div>
         )}
       </div>
